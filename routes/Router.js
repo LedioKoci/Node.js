@@ -12,7 +12,7 @@ router.post('/createUser', async (req, res) => {
     res.status(200).json(newUser);
 });
 
-router.get('/register', async (req, res) => {
+router.get('/getUser', async (req, res) => {
 
     const email = req.body.email;
     const user = await model.findOne({email : email});
@@ -27,8 +27,9 @@ router.get('/register', async (req, res) => {
 router.patch('/editUser/:password', async (req, res) => {
 
     const email = req.body.email;
-    const password = req.params.password
-    const user = await model.findOne({email : email})
+    const password = req.params.password;
+
+    await model.findOne({email : email})
     .then((user) => {
 
         if(req.body.password === user.password){
@@ -40,6 +41,24 @@ router.patch('/editUser/:password', async (req, res) => {
         }
     })
     .catch((err) => {res.status(404).json(err)});
+});
+
+router.delete('/deleteUser', async (req, res) => {
+
+        const email = req.body.email;
+        const password = req.body.password;
+
+        await model.findOne({email : email})
+        .then((user) => {
+
+            if(password === user.password){
+                model.deleteOne({email : email})
+                .then(() => {res.status(200).json({msg : "eliminato"})})
+                .catch((err) => {res.status(400).json(`there has been an error ${err}`)});
+            }else{
+                console.log(`deletion not permitted!`);
+            }
+        })
 });
 
 module.exports = router;
