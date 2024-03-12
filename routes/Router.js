@@ -24,6 +24,15 @@ router.get('/getUser', async (req, res) => {
     }
 });
 
+router.get('/getAllUsers', async (req, res) => {
+
+    await model.find({})
+    .then((users) => {
+        res.status(200).json(users);
+    })
+    .catch((err) => {res.status(400).json({msg : `error in rendering users`})});
+});
+
 router.patch('/editUser/:password', async (req, res) => {
 
     const email = req.body.email;
