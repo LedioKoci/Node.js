@@ -24,4 +24,22 @@ router.get('/register', async (req, res) => {
     }
 });
 
+router.patch('/editUser/:password', async (req, res) => {
+
+    const email = req.body.email;
+    const password = req.params.password
+    const user = await model.findOne({email : email})
+    .then((user) => {
+
+        if(req.body.password === user.password){
+            user.password = password;
+            user.save();
+            res.status(200).json({msg : "the user password has been changed"});
+        }else{
+            res.status(404).json({msg : "not permitted"});
+        }
+    })
+    .catch((err) => {res.status(404).json(err)});
+});
+
 module.exports = router;
